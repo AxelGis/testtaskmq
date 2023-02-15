@@ -12,16 +12,21 @@ type MqcanvasProps = {
 
 export const Mqcanvas: React.FC<MqcanvasProps> = ({chartType, start, end}) => {
     //ссылка на Canvas
-    const chart = useRef(null);
+    const chart = useRef<HTMLCanvasElement>(null);
     //состояние лоадера
     const [loader, setLoader] = useState(false);
     
     //рисуем график
     const drawChart = (data:ItemData[]) => {
-        let ctx: CanvasRenderingContext2D = chart.current!.getContext('2d');
-        chart.current!.width = chart.current!.parentNode.offsetWidth;
-        let draw = new CanvasDraw(ctx, chart.current!.width, data);
-        draw.drawChart();
+        if(chart.current){
+            let ctx: CanvasRenderingContext2D | null = chart.current.getContext('2d');
+            const parent: HTMLElement | null = chart.current.parentNode as HTMLElement;
+            chart.current.width = parent.offsetWidth;
+            if(ctx){
+                let draw = new CanvasDraw(ctx, chart.current.width, data);
+                draw.drawChart();    
+            }
+        }
     }
 
     //обновляем компонент при изменении интервала или типа графика
