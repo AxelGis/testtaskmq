@@ -3,11 +3,12 @@ import type { ItemData } from './types';
 import { getData } from './utils';
 
 export default class IndexedDbClass {
-    db:IDBDatabase;     //БД
-    dbName:string;      //название БД
-    dbVersion:number;   //версия БД
+    db:IDBDatabase | null;      //БД
+    dbName:string;              //название БД
+    dbVersion:number;           //версия БД
 
     constructor(dbName: string) {
+        this.db = null;
         this.dbName = dbName;
         this.dbVersion = 1;
     }
@@ -29,10 +30,10 @@ export default class IndexedDbClass {
         };
         //если загружена БД старшей версии
         openRequest.onupgradeneeded = (e:IDBVersionChangeEvent) => {
-            this.db = e.target.result;
-            this.db.createObjectStore(ChartType.TEMP, {keyPath: 't'});
-            this.db.createObjectStore(ChartType.PREC, {keyPath: 't'});
-            e.target.transaction.oncomplete = () => {
+            this.db = e.target!.result;
+            this.db!.createObjectStore(ChartType.TEMP, {keyPath: 't'});
+            this.db!.createObjectStore(ChartType.PREC, {keyPath: 't'});
+            e.target!.transaction.oncomplete = () => {
                 cb();
             };
         };
@@ -65,7 +66,7 @@ export default class IndexedDbClass {
             let request = objectStore.getAll(IDBKeyRange.bound(start, end));
             //при успешном чтении вызываем callback
             request.onsuccess = (e:Event) => {
-                cb(e.target.result);
+                cb(e.target!.result);
             };
             //обработка ошибки чтения
             request.onerror = (e:Event) => {
@@ -80,10 +81,10 @@ export default class IndexedDbClass {
         let data = await getData<ItemData>(`../data/${storeName}.json`);
 
         //очищаем старую БД
-        let request = this.db.transaction(storeName, "readwrite").objectStore(storeName).clear();
+        let request = this.db!.transaction(storeName, "readwrite").objectStore(storeName).clear();
         request.onsuccess = (e: Event) => {
             //транзакция на запись
-            let transaction = this.db.transaction(storeName, "readwrite");
+            let transaction = this.db!.transaction(storeName, "readwrite");
             //каждый элемент данных записываем как отдельная запись в БД
             data.map((item:ItemData)=>{
                 transaction.objectStore(storeName).add(item);
