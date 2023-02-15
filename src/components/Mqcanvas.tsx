@@ -18,9 +18,9 @@ export const Mqcanvas: React.FC<MqcanvasProps> = ({chartType, start, end}) => {
     
     //рисуем график
     const drawChart = (data:ItemData[]) => {
-        let ctx: CanvasRenderingContext2D = chart.current.getContext('2d');
-        chart.current.width = chart.current.parentNode.offsetWidth;
-        let draw = new CanvasDraw(ctx, chart.current.width, data);
+        let ctx: CanvasRenderingContext2D = chart.current!.getContext('2d');
+        chart.current!.width = chart.current!.parentNode.offsetWidth;
+        let draw = new CanvasDraw(ctx, chart.current!.width, data);
         draw.drawChart();
     }
 
