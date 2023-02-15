@@ -58,7 +58,7 @@ export const Mqcharts: React.FC<MqchartsProps> = () => {
                                 label="Начало" 
                                 sx={{ mt: 1, mb: 1 }} 
                                 onChange={(e: SelectChangeEvent<number>)=>{
-                                    const val = e.target.value;
+                                    const val:number = e.target.value as number;
                                     setStart(val <= end ? val : end);
                                 }} 
                             >
@@ -73,8 +73,8 @@ export const Mqcharts: React.FC<MqchartsProps> = () => {
                                 label="Конец" 
                                 sx={{ mt: 1, mb: 1 }} 
                                 onChange={(e: SelectChangeEvent<number>)=>{
-                                    const val = e.target.value;
-                                    setStart(val >= start ? val : start);
+                                    const val:number = e.target.value as number;
+                                    setEnd(val >= start ? val : start);
                                 }} 
                             >
                                 {years}
