@@ -6,6 +6,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { SelectChangeEvent } from "@mui/material";
 
 import { ChartType } from '../enums';   //типы графиков
 import { Mqcanvas } from "./Mqcanvas";  //компонент графика
@@ -56,8 +57,9 @@ export const Mqcharts: React.FC<MqchartsProps> = () => {
                                 value={start} 
                                 label="Начало" 
                                 sx={{ mt: 1, mb: 1 }} 
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                                    setStart(+e.target.value<=end?+e.target.value:end);
+                                onChange={(e: SelectChangeEvent<number>)=>{
+                                    const val = e.target.value;
+                                    setStart(val <= end ? val : end);
                                 }} 
                             >
                                 {years}
@@ -70,9 +72,10 @@ export const Mqcharts: React.FC<MqchartsProps> = () => {
                                 value={end} 
                                 label="Конец" 
                                 sx={{ mt: 1, mb: 1 }} 
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                                    setEnd(+e.target.value>=start?+e.target.value:start);
-                                }}
+                                onChange={(e: SelectChangeEvent<number>)=>{
+                                    const val = e.target.value;
+                                    setStart(val >= start ? val : start);
+                                }} 
                             >
                                 {years}
                             </Select>

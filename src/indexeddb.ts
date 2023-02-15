@@ -30,12 +30,15 @@ export default class IndexedDbClass {
         };
         //если загружена БД старшей версии
         openRequest.onupgradeneeded = (e:IDBVersionChangeEvent) => {
-            this.db = e.target!.result;
-            this.db!.createObjectStore(ChartType.TEMP, {keyPath: 't'});
-            this.db!.createObjectStore(ChartType.PREC, {keyPath: 't'});
-            e.target!.transaction.oncomplete = () => {
-                cb();
-            };
+            const target:IDBOpenDBRequest = e.target as IDBOpenDBRequest;
+            this.db = target.result;
+            this.db.createObjectStore(ChartType.TEMP, {keyPath: 't'});
+            this.db.createObjectStore(ChartType.PREC, {keyPath: 't'});
+            if(target.transaction){
+                target.transaction.oncomplete = () => {
+                    cb();
+                };
+            }
         };
     }
 
@@ -66,7 +69,7 @@ export default class IndexedDbClass {
             let request = objectStore.getAll(IDBKeyRange.bound(start, end));
             //при успешном чтении вызываем callback
             request.onsuccess = (e:Event) => {
-                cb(e.target!.result);
+                cb((<IDBRequest>e.target).result);
             };
             //обработка ошибки чтения
             request.onerror = (e:Event) => {
