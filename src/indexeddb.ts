@@ -18,7 +18,7 @@ export default class IndexedDbClass {
             console.log("Браузер на поддерживает IndexedDB");
         }
         let openRequest = window.indexedDB.open(this.dbName, this.dbVersion);
-    
+
         //подключемся к существующей в браузере БД
         openRequest.onsuccess = (e:Event) => {
             this.db = openRequest.result;
@@ -74,6 +74,29 @@ export default class IndexedDbClass {
             //обработка ошибки чтения
             request.onerror = (e:Event) => {
                 cb([]);
+            };
+        }
+    }
+
+    //получаем все записи из БД
+    getAll(storeName: string, cb: (data:ItemData[])=>void) {
+        if (this.db) {
+            //транзакция на чтение
+            const txn = this.db.transaction(storeName, "readonly");
+            const objectStore = txn.objectStore(storeName);
+            let results:ItemData[] = [];
+            //перебираем данные по записям
+            objectStore.openCursor().onsuccess = (e) => {
+                let cursor = (<IDBRequest>e.target).result;
+                if (cursor) {
+                    results.push(cursor.value);
+                    //переходим к следующей записи
+                    cursor.continue();
+                }
+            };
+            //после сбора таблицы вызываем колбэк
+            txn.oncomplete = function () {
+                cb(results);
             };
         }
     }
