@@ -16,9 +16,9 @@ export default class CanvasDraw {
 
     constructor(ctx: CanvasRenderingContext2D, width: number, data: ItemData[]) {
         this.width = width;
-        this.innerWidth = this.width - 40;
+        this.innerWidth = this.width - 70;
         this.height = 600;
-        this.innerHeight = this.height - 20;
+        this.innerHeight = this.height - 50;
         this.ctx = ctx;
         this.data = data;
         //вычисляем максимум по y
@@ -31,7 +31,7 @@ export default class CanvasDraw {
         },0);
         //вычисляем шаги для точек, т.к. график автомасштабируется по ширине
         this.dx = this.innerWidth/data.length;
-        this.dy = Math.ceil((this.max - this.min)/10);
+        this.dy = (this.max - this.min)/10
         this.py = this.innerHeight/10;
         this.zeropoint = this.max*this.py/this.dy + this.py/2 - 10;
     }
@@ -56,7 +56,7 @@ export default class CanvasDraw {
         this.ctx.lineWidth = 1.0;
         this.ctx.beginPath();
         this.ctx.moveTo(30, 10);
-        this.ctx.lineTo(30, this.height - 20);
+        this.ctx.lineTo(30, this.height);
         this.ctx.stroke();
 
         //x
@@ -71,7 +71,7 @@ export default class CanvasDraw {
     drawLabels() {
         this.ctx.strokeStyle = "black";
         //подписи по y
-        for(let i = 0; i < 10; i++) {
+        for(let i = 0; i < (this.min === 0 ? 10 : 11); i++) {
             let val:number = this.max - i*this.dy;
             this.ctx.fillText(val.toFixed(1), 4, i * this.py + this.py/2); 
         }
@@ -79,7 +79,7 @@ export default class CanvasDraw {
         //подписи по x
         const di: number = Math.ceil(this.data.length/10);
         for(let i = 0; i < this.data.length; i+=di) { 
-            this.ctx.fillText(this.data[i].t, i*this.dx + 30, this.zeropoint + 10);
+            this.ctx.fillText(this.data[i].t, (i+1)*this.dx + 30, this.zeropoint + 10);
         }
     }
     
