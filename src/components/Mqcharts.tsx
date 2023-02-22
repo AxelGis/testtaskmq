@@ -50,41 +50,6 @@ export const Mqcharts: React.FC<MqchartsProps> = () => {
         years.push(<MenuItem key={i} value={i}>{i}</MenuItem>);
     }
 
-    useEffect(() => {
-        if(dbData.find(x=>x.name === chartType)?.data.length === 0){
-            //работа с IndexedDB
-            const db = new IndexedDbClass("MQL");
-            db.open(()=>{
-                //получаем данные за требуемый интервал
-                db.getAll(chartType,data => {
-                    if(data.length === 0){
-                        //если данных нет - грузим их с сервера
-                        console.log("getData");
-                        setLoader(true);
-                        db.getData(chartType, newData => {
-                            setLoader(false);
-                            //сохраняем в кэш
-                            setDBData(dbData.map((dt:DataContextType)=>
-                                dt.name === chartType
-                                ? {name: chartType, data: newData}
-                                : dt
-                            ));
-                        });
-                    } else {
-                        //если данные есть сохраняем в кэш
-                        console.log("getDB");
-                        setDBData(dbData.map((dt:DataContextType)=>
-                            dt.name === chartType
-                            ? {name: chartType, data: data}
-                            : dt
-                        ));
-                    }
-                });
-            });
-            db.close();
-        }
-    },[chartType]);
-
     return (
         <Container component="main" maxWidth="lg">
             <Grid container spacing={2}>
@@ -140,10 +105,7 @@ export const Mqcharts: React.FC<MqchartsProps> = () => {
                                 {years}
                             </Select>
                         </Grid>
-                        <div style={{marginLeft :"20px"}}>{loader?"идет загрузка...":""}</div>
-                        <DataContext.Provider value={dbData.find(x=>x.name === chartType)?.data}>
-                            <Mqcanvas chartType={chartType} start={start} end={end} />
-                        </DataContext.Provider>
+                        <Mqcanvas chartType={chartType} start={start} end={end} />
                     </Grid>
                 </Grid>
             </Grid>
