@@ -105,7 +105,7 @@ export default class IndexedDbClass {
     async getData(storeName: string, cb: (data:ItemData[])=>void) {
         //получаем данные с сервера
         let data = await getData<ItemData>(`../data/${storeName}.json`);
-
+        cb(data);
         //очищаем старую БД
         let request = this.db!.transaction(storeName, "readwrite").objectStore(storeName).clear();
         request.onsuccess = (e: Event) => {
@@ -117,7 +117,7 @@ export default class IndexedDbClass {
             });
             //после завершщения данных вызываем callback на работу с данными
             transaction.oncomplete = (e:Event) => {
-                cb(data);
+                //cb(data);
             }
         }
     }
