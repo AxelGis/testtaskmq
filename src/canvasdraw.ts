@@ -31,7 +31,7 @@ export default class CanvasDraw {
         },0);
         //вычисляем шаги для точек, т.к. график автомасштабируется по ширине
         this.dx = this.innerWidth/data.length;
-        this.dy = (this.max - this.min)/10
+        this.dy = (this.max - this.min)/10;
         this.py = this.innerHeight/10;
         this.zeropoint = this.max*this.py/this.dy + this.py/2 - 10;
     }
